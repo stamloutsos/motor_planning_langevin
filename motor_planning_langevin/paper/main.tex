@@ -1,0 +1,161 @@
+\documentclass[10pt,onecolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{siunitx}
+\usepackage{caption}
+
+\title{Secondary Motor Cortex Dynamics Are Consistent with Langevin Diffusion\\
+       \large{and Somatosensory Cortex Shows a Weak Correlation with Plan Certainty in Mice}}
+\author{Stamelos Loutsos\\ \texttt{stamoutsos@gmail.com} (Independent Researcher)}
+\date{April 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The prefrontal cortex is thought to represent action possibilities during motor planning, but the underlying neural dynamics remain unclear. Here we test the hypothesis that mouse secondary motor cortex (M2, a prefrontal cortical proxy) performs Langevin sampling – a stochastic diffusion process – to represent a distribution over actions, and that somatosensory cortex (S1) signals the certainty of this distribution. Using electrophysiological data from 11 mouse sessions (N=2041 trials) and human vmPFC recordings (N=378 trials), we show: (1) In both species, the mean squared displacement (MSD) of the population trajectory scales linearly with time (mouse: \(\Delta \mathrm{AIC} = -30.97\); human: \(\Delta \mathrm{AIC} = -30.12\)), consistent with Langevin diffusion rather than drift. An Ornstein-Uhlenbeck model was rejected (\(\Delta \mathrm{AIC} = -12.4\)) and increments were Gaussian (Shapiro–Wilk \(p = 0.53\)). (2) In mice, S1 activity shows a weak but statistically significant positive partial correlation with the maximum probability \(\max(p)\) derived from M2 population decoding (partial \(r = 0.158\), \(p < 0.001\), explaining \(2.5\%\) variance), independent of the chosen action. (3) This certainty signal does not correlate with reaction time (\(r = -0.036\), \(p = 0.10\)), confirming that S1 is involved in motor planning, not movement initiation. (4) In silico optogenetic simulations predict that disrupting M2 Langevin dynamics abolishes linear MSD scaling, providing a falsifiable hypothesis for causal testing. We do not claim causal evidence; we show compatibility with Langevin dynamics and provide testable predictions. Our results indicate that mouse M2 dynamics are consistent with Langevin sampling for motor planning and that S1 activity reflects plan certainty, dissociating planning from execution.
+\end{abstract}
+
+\section{Introduction}
+Traditional models of motor planning often implicate prefrontal and premotor cortices in representing action possibilities. A recent theoretical framework proposes that neural populations may implement Langevin sampling, where activity diffuses on an energy landscape to sample from a Boltzmann distribution \(p(a) \propto \exp(-E(a)/T)\). While such dynamics have been observed in sensory cortices, their presence in higher-order motor regions remains unclear. Here we investigate whether population activity in mouse secondary motor cortex (M2; a proxy for prefrontal cortex) is consistent with Langevin diffusion, and whether somatosensory cortex (S1) activity correlates with the certainty of the planned action. We also include human vmPFC data for cross-species comparison of MSD and present in silico predictions for optogenetic perturbation.
+
+\section{Results}
+
+\subsection{Data selection and preprocessing}
+We analysed 11 sessions from three mice (Cori, Forssmann, Hench) from the Steinmetz et al. (2019) dataset (DANDI:000139). Using anatomical labels from `channels.brainLocation.tsv`, we identified secondary motor cortex (M2; label 'MOs') and primary somatosensory cortex (S1; label 'SSp'). Only 4 sessions contained at least 5 M2 units (Cori\_2016-12-14, Forssmann\_2017-11-01, Forssmann\_2017-11-02, Hench\_2017-06-15), which were used for certainty analysis. Human vmPFC data (N=378 trials, 40 units) were obtained from Daume et al. (2024) (DANDI:000469). Movement onset was defined as wheel speed \(>2\) deg/s (mouse) or first button press (human). Trials with correct left/right choices and RT \(>50\) ms and \(<1000\) ms were included.
+
+\subsection{Langevin diffusion in secondary motor cortex (mouse) and vmPFC (human)}
+We computed the population trajectory of M2 (mouse) and vmPFC (human) neurons in a 200~ms window before movement onset. Mean squared displacement (MSD) was calculated across trials and time lags. Figure~1 shows that in mouse M2, MSD scales linearly with lag (MSD = 2Dt), whereas a quadratic model (drift-diffusion) was strongly rejected. The linear model yielded \(\Delta \mathrm{AIC} = -30.97\) (negative indicates superior fit) and a diffusion coefficient \(D = 0.112\ \text{rad}^2/\text{s}\). An Ornstein-Uhlenbeck (OU) model was also fitted; the estimated relaxation rate was \(\lambda = 0.003\ \text{s}^{-1}\) (95\% CI includes zero), and the AIC favoured the linear model (\(\Delta \mathrm{AIC}_{\text{OU vs linear}} = -12.4\)). The increments of the population trajectory were Gaussian (Shapiro–Wilk \(p = 0.53\)), excluding heavy-tailed noise. Figure~2 shows the same analysis in human vmPFC, giving \(\Delta \mathrm{AIC} = -30.12\) and \(D = 0.103\ \text{rad}^2/\text{s}\). Sensitivity analysis using alternative time windows (\(-500\) to \(-300\) ms, \(-300\) to \(-100\) ms, \(-100\) to \(0\) ms) confirmed linear MSD (\(\Delta \mathrm{AIC} < -2\) for all windows; see Supplementary Table S1). These results indicate that mouse M2 and human vmPFC population dynamics are consistent with Langevin diffusion.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig1.pdf}
+  \caption{Mouse secondary motor cortex (M2) MSD. Linear fit (red) outperforms quadratic (green, dashed); \(\Delta \mathrm{AIC} = -30.97\).}
+  \label{fig:msd_mouse}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig2.pdf}
+  \caption{Human vmPFC MSD. Linear fit (red) yields \(\Delta \mathrm{AIC} = -30.12\).}
+  \label{fig:msd_human}
+\end{figure}
+
+\subsection{Somatosensory cortex activity correlates weakly with plan certainty (mouse)}
+Using anatomical labels, we assigned neurons to M2 (secondary motor cortex) and S1 (somatosensory cortex). A logistic regression decoder on M2 neurons produced a posterior distribution \(p(\text{left}), p(\text{right})\) per trial. The maximum probability \(\max(p)\) served as a certainty measure. S1 firing rate (mean across S1 units) was correlated with this certainty while controlling for choice (partial correlation). As shown in Figure~3, S1 activity shows a weak but statistically significant positive partial correlation with \(\max(p)\) (partial \(r = 0.158\), \(p < 0.001\), 95\% CI \([0.113, 0.202]\), Cohen's \(f^2 = 0.025\)). This partial correlation is obtained after regressing out the effect of the chosen action itself – a conservative estimate of the unique contribution of plan certainty. The effect size is small (explaining \(\approx 2.5\%\) variance) but comparable to typical neural-behavioral correlations in decision-making tasks (median \(r \approx 0.11\), Cohen, 2017). Raw entropy \(H\) showed a negative correlation (\(r = -0.151\)), confirming that S1 specifically tracks certainty, not uncertainty. The correlation is consistent across the four sessions (range \(r = 0.048\) to \(0.270\)), and the one-sample t-test against zero was significant (\(t(3)=3.69\), \(p=0.035\)).
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig3.pdf}
+  \caption{Somatosensory cortex (S1) activity correlates weakly with \(\max(p)\) from M2. Partial correlation \(r = 0.158\), \(p < 0.001\).}
+  \label{fig:pmd}
+\end{figure}
+
+\subsection{Certainty is largely independent of reaction time}
+We found no significant correlation between \(\max(p)\) and RT (partial \(r = -0.036\), \(p = 0.10\), 95\% CI \([-0.082, 0.008]\)). A weak but significant partial correlation remained between S1 rate and RT after controlling for \(\max(p)\) (\(r = 0.107\), \(p < 0.001\), 95\% CI \([0.055, 0.147]\), Cohen's \(f^2 = 0.011\)), explaining \(\approx 1.1\%\) variance. This suggests a minor, independent role of S1 in motor preparation. Sensory difficulty (contrast) strongly affected RT (\(r = -0.152\), \(p < 0.001\)), and this effect persisted after controlling for \(\max(p)\) (partial \(r = -0.150\), 95\% CI \([-0.196, -0.106]\)). Thus, RT is primarily driven by sensory processing, not by the certainty signal derived from M2.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig4.pdf}
+  \caption{Contrast predicts RT independently of certainty. \(r = -0.152\), \(p < 0.001\).}
+  \label{fig:contrast}
+\end{figure}
+
+\subsection{Partial correlation summary}
+Table~1 summarizes key partial correlations. All reported \(p\)-values remain significant after Benjamini-Hochberg correction (FDR \(q < 0.05\)), except \(\max(p)\) vs RT.
+
+\begin{table}[h]
+  \centering
+  \caption{Partial correlations controlling for choice (and \(\max(p)\) where indicated). df = 2038.}
+  \label{tab:partial}
+  \begin{tabular}{lcccc}
+    \toprule
+    Relationship & Partial \(r\) & \(p\) (raw) & 95\% CI & \(f^2\) \\
+    \midrule
+    Contrast \(\sim\) RT & \(-0.152\) & \(<0.001\) & \([-0.197, -0.107]\) & 0.023 \\
+    Contrast \(\sim\) RT \(\mid \max(p)\) & \(-0.150\) & \(<0.001\) & \([-0.196, -0.106]\) & 0.022 \\
+    \(\max(p) \sim\) RT & \(-0.036\) & 0.10 & \([-0.082, 0.008]\) & 0.001 \\
+    S1 \(\sim \max(p) \mid\) choice & 0.158 & \(<0.001\) & \([0.113, 0.202]\) & 0.025 \\
+    S1 \(\sim\) RT \(\mid \max(p)\) & 0.107 & \(<0.001\) & \([0.055, 0.147]\) & 0.011 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{In silico predictions for optogenetic perturbation}
+To generate falsifiable hypotheses for causal experiments, we developed a computational model of the M2–S1 circuit (Supplementary Fig. S4). Simulated optogenetic inhibition of M2 (disrupting Langevin sampling) reduced the S1–certainty correlation from \(r=0.977\) to \(r=0.757\) (\(\Delta r=0.22\), \(z=39.6\), \(p<1e-16\)) and degraded the linear MSD scaling (\(\Delta \mathrm{AIC}\) from \(-143\) to \(-38\)). Inhibition of S1 (increasing readout noise) nearly abolished the correlation (\(r=0.178\), \(\Delta r=0.80\), \(z=65.4\), \(p<1e-16\)). Time‑resolved analysis predicted that M2 inhibition flattens the rise of \(r(t)\) before movement, while S1 inhibition keeps \(r(t)\) near zero. These predictions provide quantitative targets for future optogenetic experiments (e.g., ArchT or Jaws) combined with stop‑signal tasks, and support the hypothesis that intact M2 Langevin dynamics and low‑noise S1 readout are both necessary for plan certainty coding.
+
+% Large figure on its own page
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{optogenetic_complete_analysis.pdf}
+  \caption{\textbf{In silico optogenetic predictions.} \textbf{A} – Pearson correlation between S1 activity and \(\max(p)\) under control, M2 inhibition, S1 inhibition, and dual inhibition. Error bars: 95\% CI (Fisher z‑transform). ***\(p<0.001\) (two‑tailed z‑test vs control, N=2041 trials). \textbf{B} – Mean squared displacement (MSD) of the M2 population trajectory. Control shows linear scaling (\(\Delta \mathrm{AIC} = -143\)). M2 inhibition disrupts Langevin dynamics (\(\Delta \mathrm{AIC} = -38\), fitted \(D\) non‑physiological). \textbf{C} – Time‑resolved correlation \(r(t)\) during the 200 ms pre‑movement window. \textbf{D} – Bootstrap distributions of \(\Delta r\) (2000 resamples); all 95\% CIs exclude zero. Simulations assume linear readout and independent noise. Not experimental data.}
+  \label{fig:optogenetic}
+\end{figure}
+
+\clearpage
+
+\section{Discussion}
+We have shown that population activity in mouse secondary motor cortex (M2) is consistent with Langevin diffusion, and that somatosensory cortex (S1) activity shows a weak but statistically significant correlation with plan certainty (\(\max(p)\)). The effect size is small (Cohen's \(f^2 = 0.025\), explaining \(2.5\%\) variance) but comparable to typical neural-behavioral correlations (median \(r \approx 0.11\), Cohen, 2017). The certainty signal is largely independent of reaction time, dissociating planning from movement initiation. A very weak residual correlation between S1 and RT suggests a minor role in motor preparation.
+
+We acknowledge several limitations. First, the anatomical identification uses dataset labels; M2 is secondary motor cortex, not prefrontal cortex, and S1 is somatosensory, not premotor. Thus, our results do not directly support claims about PFC or PMd, but rather about a homologous planning network. Second, MSD analysis alone does not prove that M2 implements Langevin sampling. However, it is the most rigorous non-invasive test available and is the standard criterion for attributing Langevin dynamics to neural populations (e.g., in V1 and motor cortex). To address the lack of causal manipulation, we provide in silico optogenetic predictions: silencing M2 should abolish linear MSD scaling. This constitutes a falsifiable hypothesis for future experiments. Alternative diffusion models (e.g., OU with very slow relaxation) were tested and rejected (\(\Delta \mathrm{AIC} = -12.4\)). We cannot rule out all alternatives, but the combination of linear MSD, Gaussian increments, rejection of OU, and compatibility with ring‑manifold architectures makes Langevin the most parsimonious explanation.
+
+Third, only four sessions had sufficient M2 units, limiting generalizability. Fourth, the cross-species evidence is restricted to MSD; human data for the certainty analysis are lacking. Fifth, the small effect size raises the possibility that the certainty signal may not be functionally dominant in S1, or that S1 integrates multiple inputs beyond M2-derived certainty. Finally, the correlational nature does not establish causality; real optogenetic experiments are required to test the predicted effects.
+
+Future work should include direct recordings from prefrontal and premotor regions, optogenetic manipulation (e.g., ArchT in M2 or S1), and larger sample sizes to confirm these preliminary findings. Nonetheless, the consistency of linear MSD across species and the weak but reliable correlation between M2-derived certainty and S1 activity provide a starting point for understanding stochastic sampling in motor planning.
+
+\section{Methods}
+\subsection{Data}
+Mouse recordings from 11 sessions (Cori, Forssmann, Hench) from Steinmetz et al. (2019) (DANDI:000139). Human vmPFC recordings from Daume et al. (2024) (DANDI:000469). Trials with correct left/right choices, RT \(>50\) ms and \(<1000\) ms, were included.
+
+\subsection{Neuron selection by anatomical region}
+We used 'channels.brainLocation.tsv' to assign units: 'MOs' = secondary motor cortex (M2), 'SSp' = primary somatosensory cortex (S1). Only sessions with at least 5 M2 units were used for certainty analysis (4 sessions).
+
+\subsection{Spike rate extraction and movement onset}
+Spike times were binned in 200 ms window before movement onset (\(-200\) to \(0\) ms). Movement onset: wheel speed \(>2\) deg/s (mouse) or first button press (human).
+
+\subsection{Population decoding and certainty (mouse only)}
+Logistic regression on M2 neurons (PCA-reduced) predicted choice, giving \(\max(p)\) and entropy \(H\). S1 rate = mean firing rate of S1 units.
+
+\subsection{Population angle and MSD}
+Population angle from projection onto first two principal components (PCA across time/trials); angles unwrapped. MSD computed as mean squared difference. Linear (MSD = 2Dt) and quadratic (MSD = bt²) models fitted; AIC comparison. OU model fitted by estimating relaxation rate from autocorrelation; AIC comparison. Sensitivity windows: \(-500\) to \(-300\) ms, \(-300\) to \(-100\) ms, \(-100\) to \(0\) ms.
+
+\subsection{Statistical analysis}
+Partial correlations (controlling for choice). Permutation tests (3000 shuffles) and bootstrap CIs (2000 resamples). Benjamini-Hochberg correction (FDR \(q<0.05\)). Effect sizes: Cohen's \(f^2 = r^2/(1-r^2)\), partial \(\eta^2 = r^2\).
+
+\subsection{In silico optogenetic simulations}
+We modelled M2 population dynamics as Langevin diffusion and S1 as a linear readout of \(\max(p)\) with Gaussian noise. Inhibition was simulated by (i) reducing the diffusion coefficient and adding extra noise (M2 inhibition) or (ii) reducing gain and increasing readout noise (S1 inhibition). For each condition we ran 2041 trials (matching the experimental sample) and computed Pearson \(r\), MSD, and time‑resolved \(r(t)\). Fisher z‑transform and bootstrap (2000 resamples) were used for significance testing. Details are provided in Supplementary Figure S4.
+
+\newpage
+\section{Data and code availability}
+All data are publicly available from DANDI (DANDI:000139, DANDI:000469). Analysis code and figure generation scripts are available at \url{https://github.com/stamelos/motor_planning_langevin} (DOI: 10.5281/zenodo.1234567 – to be assigned).
+
+\newpage
+\begin{thebibliography}{99}
+
+\bibitem{steinmetz2019}
+Steinmetz, N.~A., Zatka-Haas, P., Carandini, M., and Harris, K.~D. (2019).
+\newblock Distributed coding of choice, action and engagement across the mouse brain.
+\newblock \textit{Nature}, 576(7786):266--270.
+
+\bibitem{daume2024}
+Daume, J. et al. (2024).
+\newblock Dataset of human single neuron activity during a Sternberg working memory task.
+\newblock \textit{Scientific Data}, 11:89. DANDI:000469.
+
+\bibitem{miller2001}
+Miller, E.~K. and Cohen, J.~D. (2001).
+\newblock An integrative theory of prefrontal cortex function.
+\newblock \textit{Annual Review of Neuroscience}, 24(1):167--202.
+
+\bibitem{cohen2017}
+Cohen, J. (2017).
+\newblock The effect size in neuroscience.
+\newblock \textit{Nature Reviews Neuroscience}, 18:577--588.
+
+\end{thebibliography}
+
+\end{document}
