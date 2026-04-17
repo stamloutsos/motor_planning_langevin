@@ -1,4 +1,3 @@
-Markdown
 # Motor Planning Langevin Sampling
 
 This repository contains the analysis code and figure generation scripts for the paper:
@@ -15,18 +14,6 @@ All raw electrophysiological data are publicly available from DANDI:
 
 Processed CSV files (MSD curves, summary statistics) are included in the `data/` folder.
 
-## Code structure
-
-- `scripts/generate_paper_figures.py` – generates Figures 1-4
-- `scripts/optogenetic_complete_analysis.py` – in silico optogenetic predictions (Supplementary Figure S4)
-
-## Requirements
-
-Install dependencies with:
-```bash
-pip install -r requirements.txt
-
-21 lines hidden
 Clinical Implications: Dissociating Apraxia from Hemiplegia
 The Langevin sampling framework in M2/PMd provides a measurable, local criterion for the anatomical level of stroke damage.
 
@@ -58,3 +45,15 @@ Keywords: apraxia stroke motor-planning Langevin-dynamics biomarker M2 PMd inter
 Code: max(p) computed in src/analysis/langevin_sampler.py [line 87]
 Archived Code: https://doi.org/10.5281/zenodo.19593096
 Preprint: bioRxiv [DOI pending]
+
+## Code structure
+
+- `scripts/generate_paper_figures.py` – generates Figures 1-4
+- `scripts/optogenetic_complete_analysis.py` – in silico optogenetic predictions (Supplementary Figure S4)
+
+## Requirements
+
+Install dependencies with:
+
+```bash
+pip install -r requirements.txt
