@@ -8,8 +8,8 @@ Mouse data: DANDI:000139 (Steinmetz et al., 2019)
 Human data: DANDI:000469 (Daume et al., 2024)
 Processed CSV files (MSD curves, summary statistics) are included in the `data/` folder.
 Code structure
-`scripts/generate_paper_figures.py` – generates Figures 1-4
-`scripts/optogenetic_complete_analysis.py` – in silico optogenetic predictions (Supplementary Figure S4)
+`scripts/generate\_paper\_figures.py` – generates Figures 1-4
+`scripts/optogenetic\_complete\_analysis.py` – in silico optogenetic predictions (Supplementary Figure S4)
 Requirements
 Install dependencies with:
 ```bash
@@ -22,21 +22,21 @@ If ischemia/hemorrhage occurs within PFC or PMd, the Langevin sampler is destroy
 2. Hemiplegia / Failed Execution
 If damage occurs outside PFC/PMd – e.g. internal capsule, corticospinal tract, basal ganglia, cerebellum – the Langevin sampler remains intact. MSD stays linear and `max(p)` is computed normally. Result: motor plans are generated correctly but fail during execution. The patient subjectively "knows" what they want to do, but the limb does not obey.
 Mechanistic Biomarker
-The correlation `r(S1 ~ max(p))` acts as a diagnostic readout of M2 function:
-If weak correlation `r ~ 0.16` persists → M2 is functioning → lesion is outside PFC/PMd → execution deficit
+The correlation `r(S1 \~ max(p))` acts as a diagnostic readout of M2 function:
+If weak correlation `r \~ 0.16` persists → M2 is functioning → lesion is outside PFC/PMd → execution deficit
 If correlation vanishes → M2 is compromised → lesion is within PFC/PMd → planning deficit
 Schematic
 ```mermaid
 flowchart LR
-    A[Stroke Location] --> B{Is M2/PMd damaged?}
-    B -->|Yes| C[Langevin Sampler Destroyed<br>MSD non-linear<br>max(p) = noise]
-    B -->|No| D[Langevin Sampler Intact<br>MSD linear<br>max(p) normal]
-    C --> E[No motor plans generated<br><b>Motor Apraxia</b>]
-    D --> F[Plans generated but fail<br><b>Hemiplegia</b>]
-    E --> G[r(S1~max(p)) ≈ 0]
-    F --> H[r(S1~max(p)) ~ 0.16]
+    A\[Stroke Location] --> B{Is M2/PMd damaged?}
+    B -->|Yes| C\[Langevin Sampler Destroyed<br>MSD non-linear<br>max(p) = noise]
+    B -->|No| D\[Langevin Sampler Intact<br>MSD linear<br>max(p) normal]
+    C --> E\[No motor plans generated<br><b>Motor Apraxia</b>]
+    D --> F\[Plans generated but fail<br><b>Hemiplegia</b>]
+    E --> G\[r(S1\~max(p)) ≈ 0]
+    F --> H\[r(S1\~max(p)) \~ 0.16]
 ```
 Keywords: `apraxia` `stroke` `motor-planning` `Langevin-dynamics` `biomarker` `M2` `PMd` `internal-capsule`
-Code: `max(p)` computed in `src/analysis/langevin_sampler.py` [line 87]  
+Code: `max(p)` computed in `src/analysis/langevin\_sampler.py` [line 87]  
 Archived Code: https://doi.org/10.5281/zenodo.19593096  
 Preprint: bioRxiv [DOI pending]
