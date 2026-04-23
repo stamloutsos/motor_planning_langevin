@@ -27,34 +27,7 @@ Install dependencies with:
 pip install -r requirements.txt
 ```
 
-## Clinical Implications: Dissociating Apraxia from Hemiplegia
 
-The Langevin sampling framework in M2/PMd provides a measurable, local criterion for the anatomical level of stroke damage.
-
-### 1. Motor Apraxia
-If ischemia/hemorrhage occurs **within PFC or PMd**, the Langevin sampler is destroyed. The mean-squared displacement (MSD) of the neural trajectory is no longer linear and `max(p)` becomes noise. Result: motor plans cannot be generated. The patient cannot conceive or simulate the action, regardless of preserved muscle strength.
-
-### 2. Hemiplegia / Failed Execution
-If damage occurs **outside PFC/PMd** – e.g. internal capsule, corticospinal tract, basal ganglia, cerebellum – the Langevin sampler remains intact. MSD stays linear and `max(p)` is computed normally. Result: motor plans are generated correctly but fail during execution. The patient subjectively "knows" what they want to do, but the limb does not obey.
-
-### Mechanistic Biomarker
-The correlation `r(S1 ~ max(p))` acts as a diagnostic readout of M2 function:
-
-- If weak correlation `r ~ 0.16` persists → M2 is functioning → lesion is **outside** PFC/PMd → execution deficit
-- If correlation vanishes → M2 is compromised → lesion is **within** PFC/PMd → planning deficit
-
-### Schematic
-
-```mermaid
-flowchart LR
-    A["Stroke Location"] --> B{"Is M2/PMd damaged?"}
-    B -->|Yes| C["Langevin Sampler Destroyed<br>MSD non-linear<br>max p = noise"]
-    B -->|No| D["Langevin Sampler Intact<br>MSD linear<br>max p normal"]
-    C --> E["No motor plans generated<br><b>Motor Apraxia</b>"]
-    D --> F["Plans generated but fail<br><b>Hemiplegia</b>"]
-    E --> G["r(S1~max(p)) ≈ 0"]
-    F --> H["r(S1~max(p)) ~ 0.16"]
-```
 
 **Keywords**: `apraxia` `stroke` `motor-planning` `Langevin-dynamics` `biomarker` `M2` `PMd` `internal-capsule`
 
